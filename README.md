@@ -8,7 +8,7 @@ The python_data.py script loads the raw data, merges datasets, cleans data and s
 The train_classifier.py imports the sql table, splits as train-test, perfoms text processing, runs an ML model on the text to classify, seraches for the optimal model using grid search, outputs and saves result.
 Finally the flask app displays simple visualization.
 
-# Disaster Response Pipeline Project
+
 
 ### Instructions:
 1. Run the following commands in the project's root directory to set up your database and model.
