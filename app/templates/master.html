@@ -71,6 +71,15 @@
         Plotly.plot(ids[i], graphs[i].data, graphs[i].layout);
     }
 </script>
+  
+  
+ <script type="text/javascript">
+    const graphs2 = {{graphJSON2 | safe}};
+    const ids2 = {{ids2 | safe}};
+    for(let i in graphs2) {
+        Plotly.plot(ids2[i], graphs2[i].data, graphs2[i].layout);
+    }
+</script>
 
 </body>
 </html>
