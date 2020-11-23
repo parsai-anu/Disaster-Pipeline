@@ -1,15 +1,18 @@
 import sys
 from sqlalchemy import create_engine
-import pandas as pd
+import pandas as pd 
+import numpy as np
 
 
 def load_data(messages_filepath, categories_filepath):
+    ''' Load Messages and Categories Dataset and merge the two datasets'''
     messages = pd.read_csv(messages_filepath)
     categories = pd.read_csv(categories_filepath)
     df =pd.merge(messages,categories,on=['id']) 
     return df
 
 def clean_data(df):
+    ''' Split the category column into multiple column and convert those multiple columns to binary . '''
     categories = df['categories'].str.split(';', expand=True)
     row = categories.iloc[0,:]
     category_colnames = row.apply(lambda x:x[:len(x)-2])
@@ -21,6 +24,9 @@ def clean_data(df):
 
         # convert column from string to numeric
         categories[column] = categories[column].astype(int)
+    for col in categories.columns:
+        categories[col]=np.where(categories[col]>=1,1,0)
+    
     df.drop(['categories'],axis=1,inplace=True)
     df = pd.concat([df,categories],axis=1)
     df=df.drop_duplicates()
@@ -29,11 +35,13 @@ def clean_data(df):
 
 
 def save_data(df, database_filename):
+    ''' Save the data in the database. '''
     engine = create_engine('sqlite:///'+database_filename)
-    df.to_sql('Table2', engine, index=False)  
+    df.to_sql('Table4', engine, index=False)  
 
 
 def main():
+    ''' Runs the entire data processing pipeline. '''
     if len(sys.argv) == 4:
 
         messages_filepath, categories_filepath, database_filepath = sys.argv[1:]
