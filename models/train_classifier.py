@@ -70,9 +70,15 @@ def build_model():
         ('tfidf', TfidfTransformer()),
         ('clf', MultiOutputClassifier (RandomForestClassifier()))
         ])
+    parameters = {'clf__estimator__n_estimators': [10, 20],
+                'clf__estimator__min_samples_split': [2]
+              }
+
+    cv = GridSearchCV (pipeline, param_grid= parameters, verbose =7 )
+    return cv
 
 
-    return pipeline
+    
     
 
 
@@ -88,6 +94,8 @@ def save_model(model, model_filepath):
     ''' Save the pickle file of the model. '''
     with open(model_filepath, 'wb') as f:
         pickle.dump(model, f)
+        
+
 
 
 def main():
@@ -99,16 +107,16 @@ def main():
         X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
         
         print('Building model...')
-        model = build_model()
+        cv = build_model()
         
         print('Training model...')
-        model.fit(X_train, Y_train)
+        cv.fit(X_train, Y_train)
         
         print('Evaluating model...')
-        evaluate_model(model, X_test, Y_test, category_names)
+        evaluate_model(cv, X_test, Y_test, category_names)
 
         print('Saving model...\n    MODEL: {}'.format(model_filepath))
-        save_model(model, model_filepath)
+        save_model(cv, model_filepath)
 
         print('Trained model saved!')
 
